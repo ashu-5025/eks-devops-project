@@ -1,31 +1,26 @@
-name: Create Terraform Backend Infra
+name: Create Terraform Backend
 
 on:
   workflow_dispatch:
 
 jobs:
-  backend-bootstrap:
+  create-backend:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Configure AWS credentials
+      - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
+          aws-region: ap-south-1  # <- Make sure this matches where you want the bucket
 
-      - name: Create S3 Bucket
+      - name: Create S3 bucket and DynamoDB
         run: |
-          aws s3api create-bucket \
-            --bucket my-devops-tf-state-bucket \
-            --region ap-south-1 \
-            --create-bucket-configuration LocationConstraint=ap-south-1 || true
+          aws s3api create-bucket --bucket my-devops-tf-state-bucket --region ap-south-1 --create-bucket-configuration LocationConstraint=ap-south-1
 
-      - name: Create DynamoDB Table
-        run: |
           aws dynamodb create-table \
             --table-name my-devops-tf-locks \
             --attribute-definitions AttributeName=LockID,AttributeType=S \
             --key-schema AttributeName=LockID,KeyType=HASH \
-            --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 || true
+            --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
+            --region ap-south-1
