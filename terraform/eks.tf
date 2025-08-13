@@ -17,6 +17,7 @@ module "eks" {
       instance_types = ["t3.micro"]
     }
   }
+  cluster_endpoint_public_access_cidrs = ["0.0.0.0/0"]
 
   tags = {
     Project = "DevOps EKS Project"
