@@ -2,8 +2,12 @@ name: Application CI Pipeline
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'app/**'
+      - 'terraform/**'
+      - '.github/workflows/ci.yaml'
 
 jobs:
   build-and-push:
