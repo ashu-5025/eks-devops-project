@@ -1,0 +1,46 @@
+name: Application CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'app/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout source code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      # Step 3: Log in to Amazon ECR
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Step 4: Get ECR repo URL from Terraform outputs
+      - name: Get Terraform Outputs
+        id: tf-output
+        run: |
+          cd terraform
+          terraform init -backend=false
+          ECR_URL=$(terraform output -raw ecr_repo_url)
+          echo "ecr_url=$ECR_URL" >> $GITHUB_ENV
+
+      # Step 5: Build and push Docker image
+      - name: Build, Tag, and Push image to ECR
+        run: |
+          IMAGE_TAG=latest
+          docker build -t ${{ env.ecr_url }}:$IMAGE_TAG ./app
+          docker push ${{ env.ecr_url }}:$IMAGE_TAG
