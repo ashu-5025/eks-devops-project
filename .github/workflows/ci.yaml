@@ -43,7 +43,7 @@ jobs:
         run: |
           cd terraform
           terraform init -reconfigure
-          ECR_URL=$(terraform output -raw ecr_repo_url)
+          ECR_URL=$(terraform output -raw ecr_url)
           echo "ecr_url=$ECR_URL" >> $GITHUB_ENV
 
       # Step 6: Build and push Docker image
