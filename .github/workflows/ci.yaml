@@ -44,3 +44,4 @@ jobs:
           IMAGE_TAG=latest
           docker build -t ${{ env.ecr_url }}:$IMAGE_TAG ./app
           docker push ${{ env.ecr_url }}:$IMAGE_TAG
+
