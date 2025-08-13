@@ -42,7 +42,7 @@ jobs:
         id: tf-output
         run: |
           cd terraform
-          terraform init -backend=false
+          terraform init -reconfigure
           ECR_URL=$(terraform output -raw ecr_repo_url)
           echo "ecr_url=$ECR_URL" >> $GITHUB_ENV
 
