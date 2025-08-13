@@ -10,9 +10,9 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
-      desired_capacity = 2
+      desired_capacity = 1
       min_capacity     = 1
-      max_capacity     = 3
+      max_capacity     = 2
 
       instance_types = ["t3.medium"]
     }
