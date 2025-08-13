@@ -5,6 +5,7 @@ module "ecr" {
   repository_name = "devops-app"
   repository_image_tag_mutability = "MUTABLE"
   repository_image_scan_on_push = true
+  repository_lifecycle_policy = null
 
   tags = {
     Project = "DevOps EKS Project"
